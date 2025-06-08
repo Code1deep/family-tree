@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>شجرة العائلة</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: 'Amiri', serif; direction: rtl; background: #f9f9f9; }
+    .node { cursor: pointer; }
+    .node circle { fill: #6baed6; stroke: #3182bd; stroke-width: 1.5px; }
+    .node text { font-size: 14px; }
+    .link { fill: none; stroke: #aaa; stroke-width: 1.5px; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">شجرة العائلة</h2>
+  <svg width="1000" height="800"></svg>
+
+  <script>
+    fetch('/api/membres')
+      .then(res => res.json())
+      .then(data => {
+        const members = {};
+        data.forEach(d => members[d.id] = { ...d, children: [] });
+        data.forEach(d => {
+          d.parentIds.forEach(p => {
+            if (members[p]) members[p].children.push(members[d.id]);
+          });
+        });
+        const root = data.find(d => d.parentIds.length === 0);
+        const rootNode = members[root.id];
+
+        const tree = d3.tree().size([800, 600]);
+        const rootHierarchy = d3.hierarchy(rootNode, d => d.children);
+        tree(rootHierarchy);
+
+        const svg = d3.select("svg").append("g").attr("transform", "translate(50,50)");
+        svg.selectAll(".link")
+          .data(rootHierarchy.links())
+          .enter()
+          .append("path")
+          .attr("class", "link")
+          .attr("d", d3.linkVertical()
+            .x(d => d.x)
+            .y(d => d.y));
+
+        const node = svg.selectAll(".node")
+          .data(rootHierarchy.descendants())
+          .enter().append("g")
+          .attr("class", "node")
+          .attr("transform", d => `translate(${d.x},${d.y})`);
+
+        node.append("circle").attr("r", 20);
+        node.append("text")
+          .attr("dy", 5)
+          .style("text-anchor", "middle")
+          .text(d => d.data.name);
+      });
+  </script>
+</body>
+</html>
