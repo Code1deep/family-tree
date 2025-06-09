@@ -61,11 +61,9 @@ def api_membres():
     data = []
     for m in membres:
         data.append({
-            "id": m.id,
+            "id": str(m.id),
             "name": f"{m.first_name} {m.last_name}",
-            "firstName": m.first_name,
-            "lastName": m.last_name,
-            "parentIds": list(filter(None, [m.father_id, m.mother_id]))
+            "parentIds": [str(m.father_id)] if m.father_id else []
         })
     return jsonify(data)
 
