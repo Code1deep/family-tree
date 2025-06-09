@@ -1,0 +1,32 @@
+﻿# Environnements virtuels
+venv/
+.venv*/
+.venv_clean/
+venv_clean/
+
+*.egg-info/
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Dossier tests complet
+/tests/
+
+# Configuration
+instance/
+config.py
+*.db
+*.sqlite
+
+# Outils
+.idea/
+.vscode/
+.DS_Store
+
+# Couverture de test
+.coverage
+htmlcov/
+.pytest_cache/
