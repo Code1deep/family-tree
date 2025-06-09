@@ -2,6 +2,7 @@
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 from config import Config
@@ -10,6 +11,8 @@ app.config.from_object(Config)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+migrate = Migrate(app, db)
 
 # Modèle SQLAlchemy
 class Membre(db.Model):
@@ -44,6 +47,10 @@ class Membre(db.Model):
 
 #db.init_app(app)
 
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -64,5 +71,4 @@ def api_membres():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
