@@ -1,4 +1,4 @@
-// /app/static/js/tree.js
+// /static/js/tree.js
 fetch('/data')
   .then(res => res.json())
   .then(data => {
