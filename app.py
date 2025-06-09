@@ -1,28 +1,25 @@
 # Fichier app/app.py
-import os
+
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'family.db')
+from config import Config
+app.config.from_object(Config)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# Modèle SQLAlchemy
 class Membre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
+    first_name = db.Column(db.String, nullable=False)
+    last_name = db.Column(db.String, nullable=False)
     father_id = db.Column(db.Integer, db.ForeignKey('membre.id'))
     mother_id = db.Column(db.Integer, db.ForeignKey('membre.id'))
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": f"{self.first_name} {self.last_name}",
-            "parentIds": list(filter(None, [self.father_id, self.mother_id]))
-        }
+    external_link = db.Column(db.String(255))
 
 @app.route('/')
 def index():
@@ -30,10 +27,17 @@ def index():
 
 @app.route('/api/membres')
 def api_membres():
-    members = Membre.query.all()
-
-    return jsonify([m.to_dict() for m in members])
+    membres = Membre.query.all()
+    data = []
+    for m in membres:
+        data.append({
+            "id": m.id,
+            "name": f"{m.first_name} {m.last_name}",
+            "firstName": m.first_name,
+            "lastName": m.last_name,
+            "parentIds": list(filter(None, [m.father_id, m.mother_id]))
+        })
+    return jsonify(data)
 
 if __name__ == '__main__':
-    app.run()
-
+    app.run(debug=True)
