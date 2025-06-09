@@ -30,7 +30,7 @@ def index():
 
 @app.route('/api/membres')
 def api_membres():
-    membres = Membre.query.all()
+    members = Membre.query.all()
 
     return jsonify([m.to_dict() for m in members])
 
