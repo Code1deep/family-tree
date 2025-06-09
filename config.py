@@ -1,4 +1,4 @@
-# app/config.py
+# family-tree/config.py
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -11,7 +11,7 @@ class Config:
     """Configuration de base commune à tous les environnements."""
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    "postgresql://postgres:your_password@localhost:5432/family_db"
+    "postgresql://postgres:123@localhost:5432/family"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True  # Active les logs SQL pour le débogage
@@ -25,7 +25,7 @@ class TestingConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-    "postgresql://postgres:your_password@localhost:5432/family_db"
+    "postgresql://postgres:123@localhost:5432/family"
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -45,3 +45,4 @@ LOGGING_CONFIG = {
         "handlers": ["wsgi"]
     }
 }
+
