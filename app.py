@@ -1,4 +1,4 @@
-# family_tree/app.py
+# family-tree/app.py
 from flask import Flask, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -42,8 +42,8 @@ class Membre(db.Model):
     father = db.relationship('Membre', remote_side=[id], foreign_keys=[father_id], post_update=True, backref='enfants_du_pere')
     mother = db.relationship('Membre', remote_side=[id], foreign_keys=[mother_id], post_update=True, backref='enfants_de_la_mere')
 
-    db.init_app(app)
-    
+#db.init_app(app)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -65,6 +65,4 @@ def api_membres():
 if __name__ == '__main__':
     app.run(debug=True)
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
